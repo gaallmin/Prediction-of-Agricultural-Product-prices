@@ -1,0 +1,4 @@
+[ZoneTransfer]
+ZoneId=3
+ReferrerUrl=https://dacon.io/
+HostUrl=https://downloads.9774a20d7f666cd061f11d1f9f0fea2f.r2.cloudflarestorage.com/project/338/baseline.ipynb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=2a1f4675d9d98ee6e8ccb922d8b59e31%2F20241006%2Fauto%2Fs3%2Faws4_request&X-Amz-Date=20241006T005111Z&X-Amz-Expires=300&X-Amz-Signature=15c7a9350774581c5f47c75485224fe1bf1028437f6fe987c6a65a6804c6a4b7&X-Amz-SignedHeaders=host&response-content-disposition=attachment%3Bfilename%3D%22baseline.ipynb%22&x-id=GetObject
