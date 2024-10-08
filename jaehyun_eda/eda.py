@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 
 def show_train():
@@ -81,3 +82,5 @@ def show_train():
         (train['평균가격(원)'] > 0)
     ])
     '''
+
+
