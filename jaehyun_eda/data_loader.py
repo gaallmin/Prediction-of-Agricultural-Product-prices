@@ -1,5 +1,8 @@
+from copy import deepcopy
+
 import pandas as pd
 import numpy as np
+from sklearn.model_selection import train_test_split
 
 
 def data_loader_v1(
@@ -8,25 +11,25 @@ def data_loader_v1(
     train_percentage: float = 0.85,
 ):
 
+    RANDOM_STATE = 9999
     INPUT_SIZE = 9
 
     data = pd.read_csv(file_path)
-    x_train: np.ndarray
-    y_train: np.ndarray
-    x_val: np.ndarray
-    y_val: np.ndarray
     x_train = {  # default value as zero
         "건고추": [],
         "감자": [],
         "배": [],
-        "깐마늘(국산)": []
-        "무": 0,
-        "상추": 0,
-        "배추": 0,
-        "양파": 0,
-        "대파": 0,
-        "사과": 0,
+        "깐마늘(국산)": [],
+        "무": [],
+        "상추": [],
+        "배추": [],
+        "양파": [],
+        "대파": [],
+        "사과": [],
     }
+    y_train = deepcopy(x_train)
+    x_val = deepcopy(x_train)
+    y_val = deepcopy(x_train)
 
     data_case = {
         "건고추": {"품종명": ["화건"], "거래단위": ["30 kg"], "등급": ["상품"]},
@@ -69,17 +72,25 @@ def data_loader_v1(
         dict_price[item] = item_data
         len_data[item] = item_data.shape[0]
 
-    x_train = []
-    y_train = []
     for item in data_case.keys():
         for idx in range(len_data[item] - INPUT_SIZE - output_size):
-            x = dict_price[item][idx: INPUT_SIZE]
+            x = dict_price[item][idx: idx + INPUT_SIZE]
             y = dict_price[item][idx + INPUT_SIZE: idx + INPUT_SIZE + output_size]
 
-            x_train.append(x)
-            y_train.append(y)
+            x_train[item].append(x)
+            y_train[item].append(y)
 
-            raise ValueError("test")
+        x_train[item] = np.array(x_train[item])
+        y_train[item] = np.array(y_train[item])
+
+        x_train[item], x_val[item], y_train[item], y_val[item] = train_test_split(
+            x_train[item],
+            y_train[item],
+            test_size=1 - train_percentage,
+            random_state=RANDOM_STATE
+        )
+
+    return x_train, x_val, y_train, y_val
 
 
 if __name__ == "__main__":
