@@ -4,12 +4,29 @@ import numpy as np
 
 def data_loader_v1(
     file_path: str,
-    output_size: int = 3
+    output_size: int = 3,
+    train_percentage: float = 0.85,
 ):
 
     INPUT_SIZE = 9
 
     data = pd.read_csv(file_path)
+    x_train: np.ndarray
+    y_train: np.ndarray
+    x_val: np.ndarray
+    y_val: np.ndarray
+    x_train = {  # default value as zero
+        "건고추": [],
+        "감자": [],
+        "배": [],
+        "깐마늘(국산)": []
+        "무": 0,
+        "상추": 0,
+        "배추": 0,
+        "양파": 0,
+        "대파": 0,
+        "사과": 0,
+    }
 
     data_case = {
         "건고추": {"품종명": ["화건"], "거래단위": ["30 kg"], "등급": ["상품"]},
@@ -23,6 +40,18 @@ def data_loader_v1(
         "대파": {"품종명": ["대파(일반)"], "거래단위": ["1키로단"], "등급": ["상"]},
         "사과": {"품종명": ['홍로', '후지'], "거래단위": ['10 개'], "등급": ['상품']},
     }
+    len_data = {  # default value as zero
+        "건고추": 0,
+        "감자": 0,
+        "배": 0,
+        "깐마늘(국산)": 0,
+        "무": 0,
+        "상추": 0,
+        "배추": 0,
+        "양파": 0,
+        "대파": 0,
+        "사과": 0,
+    }
     dict_price = {}
 
     for item in data_case.keys():
@@ -35,10 +64,22 @@ def data_loader_v1(
             data['등급'] == cond_name for cond_name in data_case[item]['등급']
         ])
 
-        dict_price[item] = data.loc[condition]['평균가격(원)'].to_numpy()
+        item_data = data.loc[condition]['평균가격(원)'].to_numpy()
 
-    for idx in range():
-        pass
+        dict_price[item] = item_data
+        len_data[item] = item_data.shape[0]
+
+    x_train = []
+    y_train = []
+    for item in data_case.keys():
+        for idx in range(len_data[item] - INPUT_SIZE - output_size):
+            x = dict_price[item][idx: INPUT_SIZE]
+            y = dict_price[item][idx + INPUT_SIZE: idx + INPUT_SIZE + output_size]
+
+            x_train.append(x)
+            y_train.append(y)
+
+            raise ValueError("test")
 
 
 if __name__ == "__main__":
