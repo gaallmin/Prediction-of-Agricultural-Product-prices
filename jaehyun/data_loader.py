@@ -83,12 +83,16 @@ def data_loader_v1(
         x_train[item] = np.array(x_train[item])
         y_train[item] = np.array(y_train[item])
 
-        x_train[item], x_val[item], y_train[item], y_val[item] = train_test_split(
-            x_train[item],
-            y_train[item],
-            test_size=1 - train_percentage,
-            random_state=RANDOM_STATE
-        )
+        if train_percentage < 1:
+            x_train[item], x_val[item], y_train[item], y_val[item] = train_test_split(
+                x_train[item],
+                y_train[item],
+                test_size=1 - train_percentage,
+                random_state=RANDOM_STATE
+            )
+        else:
+            x_val = None
+            y_val = None
 
     return x_train, x_val, y_train, y_val
 

@@ -3,10 +3,10 @@ from os.path import join, isfile
 
 import pandas as pd
 import numpy as np
-from catboost import CatBoostRegressor
 
 
 def submit(
+    submit_name: str,
     test_folder: str,
     sample_submission_file: str,
     models: list,
@@ -58,8 +58,8 @@ def submit(
 
             y_hat = np.array([])
             for i in range(4 - output_size):
-                y_hat = np.append(y_hat, models[item].predict(x))
-                x = np.append(x[i:], np.array(y_hat))
+                y_hat = np.append(y_hat, models[item].predict(np.expand_dims(x, axis=0)))
+                x = np.append(x[i+1:], np.array(y_hat))
 
             pred[item] = np.append(pred[item], [y_hat])
 
@@ -67,29 +67,46 @@ def submit(
     for item in data_case.keys():
         submission[item] = pred[item]
 
-    submission.to_csv("submission.csv", index=False)
+    submission.to_csv(submit_name, index=False)
 
 
 if __name__ == "__main__":
 
+    from catboost import CatBoostRegressor
+    from xgboost import XGBRegressor
+    from sklearn.ensemble import VotingRegressor
     from data_loader import data_loader_v1
 
-    x_train, x_val, y_train, y_val = data_loader_v1("./dataset/train/train.csv", output_size=1)
+    x_train, x_val, y_train, y_val = data_loader_v1("./dataset/train/train.csv", output_size=1, train_percentage=1)
+    for item in y_train.keys():
+        y_train[item] = np.ravel(y_train[item])
+
+    depth = 2
 
     cat_params = {
         'random_state': 2024,
         'n_estimators': 1000,
         'learning_rate': 0.05,
-        'depth': 10,
+        'depth': depth,
         'l2_leaf_reg': 3,
-        'metric_period': 1000
+    }
+    xgb_params = {
+        'n_estimators': 1000,
+        'random_state': 2024,
+        "learning_rate": 0.05,
+        'max_depth': depth,
     }
     models = {}
     for item in x_train.keys():
-        models[item] = CatBoostRegressor(**cat_params)
+        cat = CatBoostRegressor(**cat_params)
+        xgb = XGBRegressor(**xgb_params)
+        models[item] = VotingRegressor(
+            estimators=[('cat', cat), ('xgb', xgb)]
+        )
         models[item].fit(x_train[item], y_train[item])
 
     submit(
+        f"submission/voting_{depth}.csv",
         "./dataset/test",
         "./sample_submission.csv",
         models,
