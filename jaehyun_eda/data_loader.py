@@ -96,7 +96,8 @@ def data_loader_v1(
 if __name__ == "__main__":
 
     data_path = "./dataset/train/train.csv"
-    meta_local_path = "./dataset/train/meta/TRAIN_산지공판장_2018-2021.csv"
-    meta_whole_path = "./dataset/train/meta/TRAIN_전국도매_2018-2021.csv"
 
-    data_loader_v1(data_path)
+    x_train, x_val, y_train, y_val = data_loader_v1(data_path, output_size=1)
+
+    print(x_train['건고추'])
+    print(y_train['건고추'])
