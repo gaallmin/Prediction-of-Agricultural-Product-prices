@@ -1,0 +1,163 @@
+건고추
+
+Best hyperparameters for XGBoost:
+{'n_estimators': 200, 'max_depth': 10, 'learning_rate': 0.19388206627784663, 'subsample': 0.6814408173477071, 'colsample_bytree': 0.8611058556612343, 'lambda': 4.695525415337497e-06, 'alph
+a': 7.079601962505506e-08, 'min_child_weight': 9, 'scale_pos_weight': 3.7796163071593556, 'gamma': 3.482744155099775, 'max_bin': 962}
+
+Best hyperparameters for LightGBM:
+{'n_estimators': 945, 'max_depth': -1, 'learning_rate': 0.19652087976274554, 'subsample': 0.5026349505025581, 'colsample_bytree': 0.6065022765166982, 'lambda_l2': 0.002872120257727731, 'la
+mbda_l1': 4.7149808440564714e-07, 'min_child_weight': 11, 'min_split_gain': 0.0432877757498773, 'scale_pos_weight': 1.138383991763414, 'cat_smooth': 66, 'max_bin': 651, 'num_leaves': 121}
+
+Best hyperparameters for CatBoost:
+{'depth': 5, 'learning_rate': 0.14117039748468652, 'iterations': 257, 'l2_leaf_reg': 0.5972791486280167, 'border_count': 130, 'bagging_temperature': 0.8285794196778905, 'random_strength': 
+7.319408252563196, 'grow_policy': 'SymmetricTree', 'min_data_in_leaf': 657}
+
+사과
+
+Best hyperparameters for XGBoost:
+{'n_estimators': 465, 'max_depth': 11, 'learning_rate': 0.039042089633124805, 'subsample': 0.9724574839827208, 'colsample_bytree': 0.7999455945775238, 'lambda': 2.615820625339082e-07, 'alp
+ha': 1.0429223096209485e-05, 'min_child_weight': 4, 'scale_pos_weight': 7.326069059610479, 'gamma': 0.9307612474771783, 'max_bin': 808}
+
+Best hyperparameters for LightGBM:
+{'n_estimators': 418, 'max_depth': 5, 'learning_rate': 0.07909546352879115, 'subsample': 0.8323028848641231, 'colsample_bytree': 0.7163195935693578, 'lambda_l2': 9.437225886032103, 'lambda
+_l1': 0.00018184321983474484, 'min_child_weight': 5, 'min_split_gain': 0.42655213541240794, 'scale_pos_weight': 1.2783081940115988, 'cat_smooth': 67, 'max_bin': 795, 'num_leaves': 103}
+
+Best hyperparameters for CatBoost:
+{'depth': 6, 'learning_rate': 0.04305598163984974, 'iterations': 1841, 'l2_leaf_reg': 1.4223348892240694e-06, 'border_count': 37, 'bagging_temperature': 0.18043712925762903, 'random_streng
+th': 3.1569506007008203, 'grow_policy': 'SymmetricTree', 'min_data_in_leaf': 680}
+(PoAP) (base) 
+
+감자
+
+Best hyperparameters for XGBoost:
+{'n_estimators': 832, 'max_depth': 3, 'learning_rate': 0.016253742121530367, 'subsample': 0.9327098766769046, 'colsample_bytree': 0.7885041509180287, 'lambda': 6.036910861004053e-06, 'alph
+a': 3.3529667806896666e-06, 'min_child_weight': 4, 'scale_pos_weight': 1.4254015175249015, 'gamma': 3.272983795467786, 'max_bin': 664}
+
+Best hyperparameters for LightGBM:
+{'n_estimators': 992, 'max_depth': 6, 'learning_rate': 0.2528000908247346, 'subsample': 0.999210546401431, 'colsample_bytree': 0.9797787725996877, 'lambda_l2': 1.9002246640502938e-08, 'lam
+bda_l1': 1.0823078672809962e-08, 'min_child_weight': 2, 'min_split_gain': 0.9618688987348043, 'scale_pos_weight': 1.0134923275428416, 'cat_smooth': 3, 'max_bin': 482, 'num_leaves': 98}
+
+Best hyperparameters for CatBoost:
+{'depth': 11, 'learning_rate': 0.024899209853690533, 'iterations': 1181, 'l2_leaf_reg': 0.008171549788859398, 'border_count': 179, 'bagging_temperature': 0.12066004744828818, 'random_stren
+gth': 8.990069339350557, 'grow_policy': 'SymmetricTree', 'min_data_in_leaf': 305}
+(PoAP) (base) 
+
+깐마늘(국산)
+
+Best hyperparameters for XGBoost:
+{'n_estimators': 704, 'max_depth': 8, 'learning_rate': 0.18848067890815062, 'subsample': 0.713
+5377609671518, 'colsample_bytree': 0.5668283820153124, 'lambda': 8.270797614499629e-06, 'alpha
+': 1.9738431845591874e-07, 'min_child_weight': 4, 'scale_pos_weight': 8.179954611179975, 'gamm
+a': 1.3676306462035805, 'max_bin': 575}
+
+Best hyperparameters for LightGBM:
+{'n_estimators': 772, 'max_depth': 12, 'learning_rate': 0.008899196615985377, 'subsample': 0.7
+408817056647362, 'colsample_bytree': 0.9490776604787312, 'lambda_l2': 0.08557675182960084, 'la
+mbda_l1': 2.378951621448762e-06, 'min_child_weight': 16, 'min_split_gain': 0.6859631101456409,
+ 'scale_pos_weight': 2.404835012602027, 'cat_smooth': 51, 'max_bin': 955, 'num_leaves': 63}
+
+Best hyperparameters for CatBoost:
+{'depth': 8, 'learning_rate': 0.1303074181944723, 'iterations': 1683, 'l2_leaf_reg': 0.1603474
+8221033057, 'border_count': 48, 'bagging_temperature': 0.9564347756127475, 'random_strength': 
+8.620175073689614, 'grow_policy': 'SymmetricTree', 'min_data_in_leaf': 899}
+(PoAP) (base) 
+
+양파
+
+Best hyperparameters for XGBoost:
+{'n_estimators': 689, 'max_depth': 8, 'learning_rate': 0.03036706021221532, 'subsample': 0.926
+7871196518053, 'colsample_bytree': 0.7904477298028777, 'lambda': 2.236333909332613, 'alpha': 0
+.6273842720013144, 'min_child_weight': 4, 'scale_pos_weight': 8.684524091490202, 'gamma': 2.61
+0889519327392, 'max_bin': 856}
+
+Best hyperparameters for LightGBM:
+{'n_estimators': 370, 'max_depth': 9, 'learning_rate': 0.29338354591004184, 'subsample': 0.912
+5840164782625, 'colsample_bytree': 0.6832327235685489, 'lambda_l2': 3.124534253728327e-08, 'la
+mbda_l1': 0.006589041720758932, 'min_child_weight': 19, 'min_split_gain': 0.13269898613508546,
+ 'scale_pos_weight': 4.7312897543503665, 'cat_smooth': 41, 'max_bin': 778, 'num_leaves': 51}
+
+Best hyperparameters for CatBoost:
+{'depth': 10, 'learning_rate': 0.09764357950381833, 'iterations': 1243, 'l2_leaf_reg': 9.81146
+5564615112, 'border_count': 83, 'bagging_temperature': 0.9999783244342988, 'random_strength': 
+6.425145777361318, 'grow_policy': 'Lossguide', 'min_data_in_leaf': 5, 'max_leaves': 252}
+(PoAP) (base) 
+
+대파
+
+Best hyperparameters for XGBoost:
+{'n_estimators': 679, 'max_depth': 5, 'learning_rate': 0.007170439435877922, 'subsample': 0.78
+99328873440633, 'colsample_bytree': 0.7106392537300634, 'lambda': 0.0012025989099343798, 'alph
+a': 6.26832176450392e-05, 'min_child_weight': 9, 'scale_pos_weight': 7.550522911775759, 'gamma
+': 3.492558448657237, 'max_bin': 880}
+
+Best hyperparameters for LightGBM:
+{'n_estimators': 236, 'max_depth': 2, 'learning_rate': 0.01781416172458978, 'subsample': 0.997
+9866190229834, 'colsample_bytree': 0.8652248720996377, 'lambda_l2': 3.1393297871265557e-07, 'l
+ambda_l1': 1.3067328839450553e-06, 'min_child_weight': 16, 'min_split_gain': 0.618430249854633
+7, 'scale_pos_weight': 2.259444730703287, 'cat_smooth': 24, 'max_bin': 298, 'num_leaves': 128}
+
+Best hyperparameters for CatBoost:
+{'depth': 4, 'learning_rate': 0.0020901129368169056, 'iterations': 2544, 'l2_leaf_reg': 0.0178
+28585368472594, 'border_count': 105, 'bagging_temperature': 0.416620588948867, 'random_strengt
+h': 0.5422244310515965, 'grow_policy': 'SymmetricTree', 'min_data_in_leaf': 141}
+(PoAP) (base) 
+
+배추
+
+Best hyperparameters for XGBoost:
+{'n_estimators': 290, 'max_depth': 11, 'learning_rate': 0.013906225946473992, 'subsample': 0.9
+466637048110136, 'colsample_bytree': 0.9475945829332627, 'lambda': 7.652977480114368e-08, 'alp
+ha': 0.004735913455607329, 'min_child_weight': 12, 'scale_pos_weight': 2.931722539090572, 'gam
+ma': 1.5107014924465665, 'max_bin': 404}
+
+Best hyperparameters for LightGBM:
+{'n_estimators': 709, 'max_depth': 17, 'learning_rate': 0.0027846052724590023, 'subsample': 0.
+6310029715717624, 'colsample_bytree': 0.97793865921055, 'lambda_l2': 0.0018865320705087876, 'l
+ambda_l1': 1.8010270257370447, 'min_child_weight': 5, 'min_split_gain': 0.7654464428191093, 's
+cale_pos_weight': 9.56210359439202, 'cat_smooth': 86, 'max_bin': 922, 'num_leaves': 21}
+
+Best hyperparameters for CatBoost:
+{'depth': 7, 'learning_rate': 0.015727620653270276, 'iterations': 2962, 'l2_leaf_reg': 2.19301
+63699235255e-06, 'border_count': 177, 'bagging_temperature': 0.39611282714979024, 'random_stre
+ngth': 7.1224305248854805, 'grow_policy': 'SymmetricTree', 'min_data_in_leaf': 538}
+(PoAP) (base) 
+
+무
+
+Best hyperparameters for XGBoost:
+{'n_estimators': 494, 'max_depth': 7, 'learning_rate': 0.0035381993774498237, 'subsample': 0.9
+981094186669898, 'colsample_bytree': 0.9575013304762654, 'lambda': 6.419980091153348, 'alpha':
+ 0.005201160878710016, 'min_child_weight': 18, 'scale_pos_weight': 8.015481715479632, 'gamma':
+ 0.9418860256234005, 'max_bin': 640}
+
+Best hyperparameters for LightGBM:
+{'n_estimators': 555, 'max_depth': -1, 'learning_rate': 0.0035284821598598813, 'subsample': 0.
+8569335719457738, 'colsample_bytree': 0.5992394471413613, 'lambda_l2': 0.1027663203389143, 'la
+mbda_l1': 1.745012346228752e-07, 'min_child_weight': 13, 'min_split_gain': 0.3669669202128141,
+ 'scale_pos_weight': 4.345985611832833, 'cat_smooth': 30, 'max_bin': 703, 'num_leaves': 56}
+
+Best hyperparameters for CatBoost:
+{'depth': 11, 'learning_rate': 0.07872271672401553, 'iterations': 2456, 'l2_leaf_reg': 0.00010
+427992698657512, 'border_count': 49, 'bagging_temperature': 0.6536575009661426, 'random_streng
+th': 2.435880848928348, 'grow_policy': 'SymmetricTree', 'min_data_in_leaf': 906}
+(PoAP) (base) 
+
+배
+
+Best hyperparameters for XGBoost:
+{'n_estimators': 453, 'max_depth': 14, 'learning_rate': 0.13192937283231565, 'subsample': 0.84
+7823999914888, 'colsample_bytree': 0.9555184764068027, 'lambda': 0.00014026043802116322, 'alph
+a': 0.02557692991780082, 'min_child_weight': 1, 'scale_pos_weight': 8.096983414117135, 'gamma'
+: 2.5444536863013028, 'max_bin': 752}
+
+Best hyperparameters for LightGBM:
+{'n_estimators': 452, 'max_depth': 0, 'learning_rate': 0.2967736857582989, 'subsample': 0.8912
+064878299535, 'colsample_bytree': 0.6106682096544154, 'lambda_l2': 0.013710804492720111, 'lamb
+da_l1': 0.0024378519251174588, 'min_child_weight': 4, 'min_split_gain': 0.34127817460192755, '
+scale_pos_weight': 6.378820761545253, 'cat_smooth': 12, 'max_bin': 884, 'num_leaves': 122}
+
+Best hyperparameters for CatBoost:
+{'depth': 10, 'learning_rate': 0.13429528835011026, 'iterations': 1122, 'l2_leaf_reg': 0.74133
+03934106668, 'border_count': 128, 'bagging_temperature': 0.39314066963885685, 'random_strength
+': 8.831976706329874, 'grow_policy': 'Lossguide', 'min_data_in_leaf': 68, 'max_leaves': 44}
+(PoAP) (base) 
