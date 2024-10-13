@@ -4,11 +4,14 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+from scaler import TimeseriesMinMaxScaler
 
-def data_loader_v1(
+
+def scaling_data_loader(
     file_path: str,
     output_size: int = 3,
-    train_percentage: float = 0.85,
+    train_percentage: float = 0.7,
+    return_scaler: bool = False
 ):
 
     RANDOM_STATE = 9999
@@ -43,6 +46,7 @@ def data_loader_v1(
         "대파": {"품종명": ["대파(일반)"], "거래단위": ["1키로단"], "등급": ["상"]},
         "사과": {"품종명": ['홍로', '후지'], "거래단위": ['10 개'], "등급": ['상품']},
     }
+
     len_data = {  # default value as zero
         "건고추": 0,
         "감자": 0,
@@ -56,6 +60,7 @@ def data_loader_v1(
         "사과": 0,
     }
     dict_price = {}
+    scaler = {}
 
     for item in data_case.keys():
         condition = data['품목명'] == item
@@ -68,6 +73,10 @@ def data_loader_v1(
         ])
 
         item_data = data.loc[condition]['평균가격(원)'].to_numpy()
+
+        # min max scaling
+        scaler[item] = TimeseriesMinMaxScaler()
+        item_data = scaler[item].fit_transform(item_data)
 
         dict_price[item] = item_data
         len_data[item] = item_data.shape[0]
@@ -94,18 +103,19 @@ def data_loader_v1(
             x_val = None
             y_val = None
 
-    return x_train, x_val, y_train, y_val
+    return x_train, x_val, y_train, y_val, scaler
 
 
 def data_loader(
     file_path: str,
     output_size: int = 3,
     train_percentage: float = 0.7,
-    output_name: str = "평균가격(원)",
-    new_features: list = []
+    output_names: list = ["평균가격(원)"],
+    new_features: list = [],
+    return_scaler: bool = False
 ):
 
-    if output_name in new_features:
+    if output_names in new_features:
         raise ValueError("output_name이 new_features안에 들어가지 않도록 하자")
 
     RANDOM_STATE = 9999
@@ -165,7 +175,7 @@ def data_loader(
             data['등급'] == cond_name for cond_name in data_case[item]['등급']
         ])
 
-        item_data = data.loc[condition][[output_name] + new_features].to_numpy()
+        item_data = data.loc[condition][output_names + new_features].to_numpy()
 
         dict_price[item] = item_data
         len_data[item] = item_data.shape[0]
@@ -173,7 +183,7 @@ def data_loader(
     for item in data_case.keys():
         for idx in range(len_data[item] - INPUT_SIZE - output_size):
             x = dict_price[item][idx: idx + INPUT_SIZE, :].flatten()
-            y = dict_price[item][idx + INPUT_SIZE: idx + INPUT_SIZE + output_size, 0]
+            y = dict_price[item][idx + INPUT_SIZE: idx + INPUT_SIZE + output_size, 0:len(output_names)].flatten()
 
             x_train[item].append(x)
             y_train[item].append(y)
