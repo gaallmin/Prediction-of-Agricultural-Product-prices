@@ -5,11 +5,12 @@ from sklearn.ensemble import VotingRegressor
 
 from data_loader import data_loader_v1, data_loader
 from submission import submit, submit_v2
-from utils import test
+from utils import test, cv
 
 x_train, x_val, y_train, y_val = data_loader(
     "./dataset/train/v1_averageFilling.csv",
     output_size=1,
+    train_percentage=1,
     #new_features=['평년 평균가격(원)']
 )
 for item in y_train.keys():
@@ -24,13 +25,13 @@ xgb_depth = 1
 # 1000: 0.0930
 cat_params = {
     'random_state': 2024,
-    'n_estimators': 90,
+    'n_estimators': 1000,
     'learning_rate': 0.05,
     'depth': cat_depth,
     'l2_leaf_reg': 3,
 }
 xgb_params = {
-    'n_estimators': 90,
+    'n_estimators': 1000,
     'random_state': 2024,
     "learning_rate": 0.05,
     'max_depth': xgb_depth,
@@ -44,6 +45,9 @@ for item in x_train.keys():
     )
     models[item].fit(x_train[item], y_train[item])
 
+cv(models, x_train, y_train)
+
+'''
 test(models, x_val, y_val)
 
 submit_v2(
@@ -53,3 +57,4 @@ submit_v2(
     models,
     output_size=1
 )
+'''

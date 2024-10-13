@@ -1,5 +1,6 @@
 import numpy as np
-
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import make_scorer
 
 def nmae(
     y_hat: dict,
@@ -16,6 +17,40 @@ def nmae(
     score = score / m
 
     return score
+
+
+def nmae_not_dict(
+    y: dict,
+    y_hat: dict
+):
+
+    n = y.shape[0]
+    score = np.sum(np.abs(y_hat.flatten() - y.flatten())/y.flatten())/n
+
+    return score
+
+
+def cv(
+    models: dict,
+    X: dict,
+    y: dict
+):
+
+    nmae_score = make_scorer(nmae_not_dict)
+
+    scores: list = []
+    for item in models.keys():
+        score = cross_val_score(
+            models[item],
+            X[item],
+            y[item],
+            cv=4,
+            scoring=nmae_score
+        )
+        scores.append(np.mean(score))
+    mean_score = sum(scores)/len(scores)
+
+    print(f"cv nmae: {mean_score}")
 
 
 def test(
