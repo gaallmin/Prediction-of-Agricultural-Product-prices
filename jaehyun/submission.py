@@ -11,6 +11,7 @@ def submit(
     sample_submission_file: str,
     models: list,
     output_size: int,
+    ewm: bool = False
 ):
 
     data_case = {
@@ -58,7 +59,14 @@ def submit(
 
             y_hat = np.array([])
             for i in range(4 - output_size):
-                y_hat = np.append(y_hat, models[item].predict(np.expand_dims(x, axis=0)))
+
+                if ewm:
+                    x_ewm = pd.DataFrame(x)
+                    x_ewm = x_ewm.ewm(alpha=0.4).mean().to_numpy().flatten()
+                    y_hat = np.append(y_hat, models[item].predict(np.expand_dims(x_ewm, axis=0)))
+                else:
+                    y_hat = np.append(y_hat, models[item].predict(np.expand_dims(x, axis=0)))
+
                 x = np.append(x[i+1:], np.array(y_hat))
 
             pred[item] = np.append(pred[item], [y_hat])

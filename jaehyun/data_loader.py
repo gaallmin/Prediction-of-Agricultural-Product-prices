@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-from scaler import TimeseriesMinMaxScaler
+from scaler import TimeseriesMinMaxScaler, LogScaler
 
 
 def scaling_data_loader(
@@ -75,7 +75,7 @@ def scaling_data_loader(
         item_data = data.loc[condition]['평균가격(원)'].to_numpy()
 
         # min max scaling
-        scaler[item] = TimeseriesMinMaxScaler()
+        scaler[item] = LogScaler()
         item_data = scaler[item].fit_transform(item_data)
 
         dict_price[item] = item_data
@@ -112,7 +112,9 @@ def data_loader(
     train_percentage: float = 0.7,
     output_names: list = ["평균가격(원)"],
     new_features: list = [],
-    return_scaler: bool = False
+    return_scaler: bool = False,
+    ewm: bool = False,
+    log: bool = False,
 ):
 
     if output_names in new_features:
@@ -176,14 +178,21 @@ def data_loader(
         ])
 
         item_data = data.loc[condition][output_names + new_features].to_numpy()
-
         dict_price[item] = item_data
+
+        if log:
+            item_data = np.log(item_data)
+
         len_data[item] = item_data.shape[0]
 
     for item in data_case.keys():
         for idx in range(len_data[item] - INPUT_SIZE - output_size):
             x = dict_price[item][idx: idx + INPUT_SIZE, :].flatten()
             y = dict_price[item][idx + INPUT_SIZE: idx + INPUT_SIZE + output_size, 0:len(output_names)].flatten()
+
+            if ewm:
+                x = pd.DataFrame(x)
+                x = x.ewm(alpha=0.4).mean().to_numpy().flatten()
 
             x_train[item].append(x)
             y_train[item].append(y)

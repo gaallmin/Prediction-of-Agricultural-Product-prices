@@ -1,6 +1,25 @@
 import numpy as np
 
 
+class LogScaler:
+
+    def __init__(self):
+        pass
+
+    def fit_transform(
+        self,
+        X: np.ndarray
+    ):
+
+        return np.log(1 + X)
+
+    def inverse_transform(
+        self,
+        X_new
+    ):
+
+        return np.exp(X_new) - 1
+
 class TimeseriesMinMaxScaler:
 
     def __init__(self):

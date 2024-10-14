@@ -59,6 +59,7 @@ def raw_cv(
             models[item].fit(x_train, y_train)
 
             pred = models[item].predict(x_val)
+
             if scaler != None:
                 pred = scaler[item].inverse_transform(pred)
 
