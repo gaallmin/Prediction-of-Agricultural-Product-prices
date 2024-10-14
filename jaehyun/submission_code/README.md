@@ -1,12 +1,12 @@
-# OS info:TN
+# OS, python version
 
 **Ubuntu 20.04.6 LTS**
+**Python3.12.7**
 
-# Requirements
+# Packages
 
 |Package|Version|
 |-------|-------|
-|Python             |3.12.7|
 |numpy              |1.26.4|
 |pandas             |2.2.3|
 |scikit-learn       |1.5.2|
