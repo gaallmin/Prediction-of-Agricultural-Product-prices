@@ -1,7 +1,5 @@
 import numpy as np
-from catboost import CatBoostRegressor
-from xgboost import XGBRegressor
-from sklearn.linear_model import LinearRegression, Ridge, BayesianRidge, Lasso, ElasticNet, LassoLars
+from sklearn.neural_network import MLPRegressor
 from sklearn.ensemble import VotingRegressor
 
 from data_loader import data_loader
@@ -12,7 +10,7 @@ x_train, x_val, y_train, y_val = data_loader(
     "./dataset/train",
     output_size=1,
     train_percentage=1,
-    process_method='ewma'
+    process_method='log'
 )
 
 for item in y_train.keys():
@@ -21,17 +19,12 @@ for item in y_train.keys():
 models = {}
 for item in x_train.keys():
 
-    lasso = [Lasso(alpha=1, tol=1e-7, selection='random')]*10
-    models[item] = VotingRegressor(
-        estimators=[
-            (f'lasso_{i}', lasso[i]) for i in range(10)
-        ],
-    )
-
+    models[item] = MLPRegressor(learning_rate_init=0.05, random_state=1, max_iter=5000, early_stopping=True)
     #models[item].fit(x_train[item], y_train[item])
 
 cv(models, x_train, y_train)
 
+'''
 submit(
     f"submission/Lasso_multi_10_log.csv",
     "./dataset/test",
@@ -40,3 +33,4 @@ submit(
     output_size=1,
     process_method='ewma'
 )
+'''

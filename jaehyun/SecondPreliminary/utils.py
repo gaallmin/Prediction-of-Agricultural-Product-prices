@@ -125,7 +125,8 @@ def cv(
         )
         scores.append(np.mean(score))
 
-    print(scores)
+    for idx, item in enumerate(models.keys()):
+        print(f"{item}: {round(scores[idx], 5)}")
 
     mean_score = sum(scores)/len(scores)
 

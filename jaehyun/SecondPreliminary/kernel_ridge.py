@@ -1,8 +1,7 @@
 import numpy as np
-from catboost import CatBoostRegressor
-from xgboost import XGBRegressor
-from sklearn.linear_model import LinearRegression, Ridge, BayesianRidge, Lasso, ElasticNet, LassoLars
-from sklearn.ensemble import VotingRegressor
+from sklearn.kernel_ridge import KernelRidge
+from sklearn.linear_model import Lasso
+from sklearn.ensemble import VotingRegressor, StackingRegressor
 
 from data_loader import data_loader
 from submission import submit
@@ -22,18 +21,18 @@ models = {}
 for item in x_train.keys():
 
     lasso = [Lasso(alpha=1, tol=1e-7, selection='random')]*10
-    models[item] = VotingRegressor(
+    models[item] = StackingRegressor(
         estimators=[
             (f'lasso_{i}', lasso[i]) for i in range(10)
         ],
+        final_estimator = KernelRidge(alpha=0.5)
     )
+    models[item].fit(x_train[item], y_train[item])
 
-    #models[item].fit(x_train[item], y_train[item])
-
-cv(models, x_train, y_train)
+#cv(models, x_train, y_train)
 
 submit(
-    f"submission/Lasso_multi_10_log.csv",
+    f"submission/stakcing_lasso_10_kernel_ewma.csv",
     "./dataset/test",
     "./sample_submission.csv",
     models,
