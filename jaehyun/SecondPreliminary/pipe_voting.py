@@ -42,7 +42,7 @@ class LassoTreeRegressor(BaseEstimator, RegressorMixin):
 
 
 x_comb = {
-    "배추": ["감자 수미", "배추"],
+    "배추": ["배추"],
     "무": ["무"],
     "양파": ["양파"],
     "감자 수미": ["감자 수미"],

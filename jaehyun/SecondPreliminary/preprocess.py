@@ -15,6 +15,11 @@ df2 = pd.read_csv("./dataset/train/train_2.csv")
 # 사과 사용 가능 (약간의 결측치)
 # 배 사용 가능
 
+not_case = {
+    "무": df1[df1['품목(품종)명'] == "무"],
+    "깐마늘(국산)": df2[df2['품목명'] == "깐마늘(국산)"],
+}
+
 case = {
     "배추": df1[df1['품목(품종)명'] == "배추"],
     "양파": df1[df1['품목(품종)명'] == "양파"],
@@ -44,8 +49,8 @@ for item, item_df in case.items():
 
     case[item] = pd.concat([target, item_df], ignore_index=True)
 
-new_df1 = pd.concat([case['배추'], case['양파'], case['감자 수미'], case['대파(일반)']], ignore_index=True)
-new_df2 = pd.concat([case['건고추'], case['상추'], case['사과'], case['배']], ignore_index=True)
+new_df1 = pd.concat([case['배추'], not_case['무'], case['양파'], case['감자 수미'], case['대파(일반)']], ignore_index=True)
+new_df2 = pd.concat([case['건고추'], not_case['깐마늘(국산)'], case['상추'], case['사과'], case['배']], ignore_index=True)
 
 new_df1.to_csv("./dataset/train/train_1_v2.csv")
 new_df2.to_csv("./dataset/train/train_2_v2.csv")
