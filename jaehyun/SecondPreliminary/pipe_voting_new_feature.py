@@ -7,7 +7,7 @@ import numpy as np
 
 from dummy import LastPredictor
 from data_loader import data_loader
-from data_loader_test import data_loader_comb, data_loader_common
+from data_loader_test import data_loader_comb, data_loader_common, data_loader_v2
 from submission import submit, submit_comb
 from utils import test, raw_cv, cv
 
@@ -55,13 +55,10 @@ x_comb = {
     "배": ["배"],
 }
 
-x_train, x_val, y_train, y_val = data_loader(
-
+x_train, x_val, y_train, y_val, x_common_train, x_common_val, y_common_train, y_common_val = data_loader_v2(
     train_path="./dataset/train",
-    #x_comb=x_comb,
-    input_size=3,
+    input_array = np.array([4, 5, 8]),
     output_size=1,
-    #output_names=['평년 평균가격(원) Common Year SOON'],
     train_percentage=1, process_method='ewma'
 )
 for item in y_train.keys():
@@ -71,9 +68,9 @@ models = {}
 for item in x_train.keys():
 
     models[item] = LassoTreeRegressor(tree_depth=5)
-    models[item].fit(x_train[item], y_train[item])
+    #models[item].fit(x_train[item], y_train[item])
 
-raw_cv(models, x_train, y_train)
+cv(models, x_train, y_train)
 
 '''
 submit_comb(

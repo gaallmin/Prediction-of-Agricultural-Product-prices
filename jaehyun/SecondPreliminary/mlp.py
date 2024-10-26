@@ -2,15 +2,14 @@ import numpy as np
 from sklearn.neural_network import MLPRegressor
 from sklearn.ensemble import VotingRegressor
 
-from data_loader import data_loader
+from data_loader_meta import data_loader_meta
 from submission import submit
 from utils import test, raw_cv, cv
 
-x_train, x_val, y_train, y_val = data_loader(
+x_train, x_val, y_train, y_val = data_loader_meta(
     "./dataset/train",
-    output_size=1,
     train_percentage=1,
-    process_method='log'
+    process_method='ewma'
 )
 
 for item in y_train.keys():

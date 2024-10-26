@@ -1,0 +1,85 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from itertools import product
+
+PRODUCT_CASE = [
+    "배추",
+    "무",
+    "양파",
+    "감자 수미",
+    "대파",
+    "건고추",
+    "깐마늘",
+    "상추",
+    "사과",
+    "배",
+]
+
+CASE = [
+    "배추",
+    "무",
+    "양파",
+    "감자 수미",
+    "대파(일반)",
+    "건고추",
+    "깐마늘(국산)",
+    "상추",
+    "사과",
+    "배",
+]
+
+
+def preprocess_weather(
+    path: str = "./dataset/train/meta/TRAIN_기상_2018-2022.csv",
+    features: list = ['순 평균상대습도', '순 평균기온']
+):
+
+    years = ['2018', '2019', '2020', '2021', '2022']
+    months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+
+    data = pd.read_csv(path)
+
+    new_data = {}
+
+    features_list = {}
+
+    for item_idx, item in enumerate(CASE):
+
+        product_list = []
+        yyyymmsoon_list = []
+        for feature in features:
+            features_list[feature] = []
+
+        for year, month, soon in product(years, months, ['상순', '중순', '하순']):
+            product_list.append(item)
+            yyyymmsoon_list.append(f'{year}{month}{soon}')
+
+            for feature in features:
+                features_list[feature].append(data[
+                    (data['YYYYMMSOON'] == f'{year}{month}{soon}') &
+                    (data['주산지 품목명'] == PRODUCT_CASE[item_idx])
+                ][feature])
+        
+
+
+def data_loader_meta(
+    train_path: str = "./dataset/train",
+    input_size: int = 9,
+    train_percentage: float = 0.7,
+    is_month: bool = True,
+    meta_features: dict = {
+        "./dataset/train/meta/TRAIN_기상_2018-2022.csv": [
+            '순 평균기온',
+        ]
+    },
+    process_method: str = 'ewm'  # 'ewm', sma', 'ewma', 'log'
+):
+
+    RANDOM_STATE = 9999
+    data_1 = pd.read_csv(path.join(train_path, "train_1.csv"))
+    data_2 = pd.read_csv(path.join(train_path, "train_2.csv"))
+
+
+if __name__ == "__main__":
+    preprocess_weather()

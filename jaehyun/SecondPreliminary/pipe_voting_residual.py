@@ -9,7 +9,8 @@ from dummy import LastPredictor
 from data_loader import data_loader
 from data_loader_test import data_loader_comb, data_loader_common
 from submission import submit, submit_comb
-from utils import test, raw_cv, cv
+from utils import test, raw_cv, cv, residual_raw_cv
+
 
 # Custom model combining Lasso and DecisionTree
 class LassoTreeRegressor(BaseEstimator, RegressorMixin):
@@ -42,48 +43,81 @@ class LassoTreeRegressor(BaseEstimator, RegressorMixin):
         return first_preds + second_preds
 
 
-x_comb = {
-    "배추": ["배추"],
-    "무": ["무"],
-    "양파": ["양파"],
-    "감자 수미": ["감자 수미"],
-    "대파(일반)": ["대파(일반)"],
-    "건고추": ["건고추"],
-    "깐마늘(국산)": ["깐마늘(국산)"],
-    "상추": ["상추"],
-    "사과": ["사과"],
-    "배": ["배"],
-}
+# Custom model combining Lasso and DecisionTree
+class CombinedRegressor(BaseEstimator, RegressorMixin):
+    def __init__(self):
 
-x_train, x_val, y_train, y_val = data_loader(
+        self.common_model = LassoTreeRegressor()
+        self.residual_model = LassoTreeRegressor()
 
+    def fit(self, X, y):
+
+        self.common_model.fit(X['common'], y['common'])
+        self.residual_model.fit(X['residual'], y['residual'])
+
+        return self
+
+    def predict(self, X):
+        # Predict using Lasso and add the residuals predicted by the tree
+        common_preds = self.common_model.predict(X['common'])
+        residual_preds = self.residual_model.predict(X['residual'])
+
+        return common_preds + residual_preds
+
+'''
+배추: 0.16806459753454314
+무: 0.1285070501099372
+양파: 0.10006963261347707
+감자 수미: 0.1060208266860644
+대파(일반): 0.1404766736619056
+건고추: 0.07600089606196334
+깐마늘(국산): 0.019255475654193395
+상추: 0.10218760081335508
+사과: 0.08557062212591401
+배: 0.0326263118341509
+cv nmae: 0.09587796870955043
+'''
+
+x_train, _, y_train, _, x_common_train, _, y_common_train, _ = data_loader_common(
     train_path="./dataset/train",
     #x_comb=x_comb,
     input_size=3,
     output_size=1,
-    #output_names=['평년 평균가격(원) Common Year SOON'],
     train_percentage=1, process_method='ewma'
 )
+
 for item in y_train.keys():
     y_train[item] = np.ravel(y_train[item])
+    y_common_train[item] = np.ravel(y_common_train[item])
+
+X = {}
+y = {}
+for item in y_train.keys():
+
+    X[item] = {
+        'common': x_common_train[item],
+        'residual': x_train[item] - x_common_train[item],
+    }
+    y[item] = {
+        'common': y_common_train[item],
+        'residual': y_train[item] - y_common_train[item],
+    }
+
 
 models = {}
 for item in x_train.keys():
 
-    models[item] = LassoTreeRegressor(tree_depth=5)
-    models[item].fit(x_train[item], y_train[item])
+    models[item] = CombinedRegressor()
+    #models[item].fit(X[item], y[item])
 
-raw_cv(models, x_train, y_train)
+residual_raw_cv(models, X, y)
 
-'''
-submit_comb(
-    f"submission/data_v2_comb_input_3_residual_last_lasso_ewma.csv",
+submit(
+    f"submission/input_3_residual_combined_ewma.csv",
     "./dataset/test",
     "./sample_submission.csv",
     models,
-    x_comb=x_comb,
     output_size=1,
     input_size=3,
     process_method='ewma'
 )
-'''
