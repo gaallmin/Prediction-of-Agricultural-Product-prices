@@ -4,6 +4,19 @@ from sklearn.base import BaseEstimator, TransformerMixin, RegressorMixin
 from sklearn.neural_network import MLPRegressor
 from sklearn.ensemble import VotingRegressor
 
+import numpy as np
+
+
+class LastPredictor(BaseEstimator, RegressorMixin):
+    def fit(self, X, y=None):
+        # Calculate the mean of each feature and store it
+        self.mean_ = np.mean(X, axis=1)
+        return self
+
+    def predict(self, X):
+        # Return the stored mean as a prediction for each sample
+
+        return X[:, -1].flatten()
 
 class LastLassoRegressor(BaseEstimator, RegressorMixin):
     def __init__(self):
@@ -34,19 +47,24 @@ class LastLassoRegressor(BaseEstimator, RegressorMixin):
 
 
 class ThreeLassoRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self, no_common: bool = False):
+    def __init__(self):
 
         self.model = LastLassoRegressor()
 
     def fit(self, X, y):
 
-        self.model.fit(X, y[:, 1])
-
+        self.model.fit(X, y[:, 0])
         return self
 
     def predict(self, X):
 
-        preds = self.mean_model.predict(X)
+        preds = self.model.predict(X)
+
+        print(X.shape)
+        print(preds.shape)
+
+        new_X = np.vstack((X, [preds]))
+        raise ValueError("test")
 
         return (1 - self.mean_percentage)*common_preds + self.mean_percentage*mean_preds
 

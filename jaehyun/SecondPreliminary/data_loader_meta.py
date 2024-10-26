@@ -127,6 +127,7 @@ def data_loader_meta(
         condition = data_1['품목(품종)명'] == item
         data_dict[item] = data_1.loc[condition]
         len_data[item] = data_dict[item].shape[0]
+
     for item in CASE[5:]:
         condition = data_2['품목명'] == item
         data_dict[item] = data_2.loc[condition]
@@ -136,15 +137,15 @@ def data_loader_meta(
     output = ['평균가격(원)']
     for item in CASE:
         for idx in range(len_data[item] - input_size - OUTPUT_SIZE):
-            x = data_dict[item].loc[idx: idx + input_size - 1, ][input]
-            y = data_dict[item].loc[idx + input_size: idx + input_size + OUTPUT_SIZE - 1][output]
+            x = data_dict[item].iloc[idx: idx + input_size][input]
+            y = data_dict[item].iloc[idx + input_size: idx + input_size + OUTPUT_SIZE][output]
 
             if process_method == 'ewm':
-                x['평균가격(원)'] = x['평균가격(원)'].ewm(alpha=0.4).mean().to_numpy().flatten()
+                x['평균가격(원)'] = x['평균가격(원)'].ewm(alpha=0.4).mean()
             elif process_method == 'ewma':
                 x['평균가격(원)'] = x['평균가격(원)'].ewm(span=4, adjust=False).mean()
             elif process_method == 'sma':
-                x['평균가격(원)'] = x['평균가격(원)'].rolling(window=3, min_periods=1).mean().to_numpy().flatten()
+                x['평균가격(원)'] = x['평균가격(원)'].rolling(window=3, min_periods=1).mean()
             elif process_method == 'log':
                 pass
 
@@ -157,16 +158,16 @@ def data_loader_meta(
         x_train[item] = np.array(x_train[item])
         y_train[item] = np.array(y_train[item])
 
-    if train_percentage < 1:
-        x_train[item], x_val[item], y_train[item], y_val[item] = train_test_split(
-            x_train[item],
-            y_train[item],
-            test_size=1 - train_percentage,
-            random_state=RANDOM_STATE
-        )
-    else:
-        x_val = None
-        y_val = None
+        if train_percentage < 1:
+            x_train[item], x_val[item], y_train[item], y_val[item] = train_test_split(
+                x_train[item],
+                y_train[item],
+                test_size=1 - train_percentage,
+                random_state=RANDOM_STATE
+            )
+        else:
+            x_val[item] = None
+            y_val[item] = None
 
     return x_train, x_val, y_train, y_val
 
