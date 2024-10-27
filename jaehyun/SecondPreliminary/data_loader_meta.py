@@ -41,63 +41,69 @@ def preprocess_month(
 
     return data
 
-def preprocess_weather(
+def join_weather(
+    data_dict,
     path: str = "./dataset/train/meta/TRAIN_기상_2018-2022.csv",
-    features: list = ['순 평균상대습도', '순 평균기온']
+    join: dict = {
+        # 리스트는 '품종', '지역', '피쳐' 순
+        # 결측은 NULL로 처리
+        '배추': ['가을', 'A', '순 강수량'],
+        '무': ['월동', 'D', '순 평균풍속'],
+        '양파': ['중만생종', 'K', '순 평균기온'],
+    },
 ):
 
     years = ['2018', '2019', '2020', '2021', '2022']
     months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
-    soon = ['상순', '중순', '하순']
 
     data = pd.read_csv(path)
 
-    new_data = {}
+    for item in join.keys():
 
-    features_list = {}
+        soon = ['상순', '중순', '하순']
 
-    for item_idx, item in enumerate(CASE):
-
+        new_data = {}
         product_list = []
         yyyymmsoon_list = []
-        for feature in features:
-            features_list[feature] = []
+        feature_list = []
 
         for year, month, soon in product(years, months, soon):
             product_list.append(item)
             yyyymmsoon_list.append(f'{year}{month}{soon}')
-
-            for feature in features:
-                features_list[feature].append(data[
-                    (data['YYYYMMSOON'] == f'{year}{month}{soon}') &
-                    (data['주산지 품목명'] == PRODUCT_CASE[item_idx])
-                ][feature].mean())
+            feature_list.append(data[
+                (data['YYYYMMSOON'] == f'{year}{month}{soon}') &
+                (data['주산지 품목명'] == PRODUCT_CASE[CASE.index(item)]) &
+                (data['주산지 품종명'] == join[item][0]) &
+                (data['지역 이름'] == join[item][1])
+            ][join[item][2]].iloc[0])
 
         new_data['품목명'] = product_list
         new_data['YYYYMMSOON'] = yyyymmsoon_list
-        for feature in features:
-            new_data[feature] = features_list[feature]
+        new_data[join[item][2]] = feature_list
+        new_data = pd.DataFrame(new_data)
 
-    new_data = pd.DataFrame(new_data)
+        data_dict[item] = data_dict[item].join(new_data[join[item][2]])
 
-    return new_data
+    return data_dict
 
 
 def data_loader_meta(
     train_path: str = "./dataset/train",
     input_size: int = 9,
     train_percentage: float = 0.7,
-    is_month: bool = True,
-    meta_features: dict = {
-        "./dataset/train/meta/TRAIN_기상_2018-2022.csv": [
-            '순 평균기온',
-        ]
+    is_month: bool = False,
+    weather: dict = {
+        # 리스트는 '품종', '지역', '피쳐' 순
+        '배추': ['가을', 'A', '순 강수량'],
+        '무': ['월동', 'D', '순 평균풍속'],
+        '양파': ['중만생종', 'K', '순 평균기온'],
     },
     process_method: str = 'ewm'  # 'ewm', sma', 'ewma', 'log'
 ):
 
     OUTPUT_SIZE = 3
     RANDOM_STATE = 9999
+
     data_1 = pd.read_csv(path.join(train_path, "train_1.csv"))
     data_2 = pd.read_csv(path.join(train_path, "train_2.csv"))
 
@@ -133,11 +139,20 @@ def data_loader_meta(
         data_dict[item] = data_2.loc[condition]
         len_data[item] = data_dict[item].shape[0]
 
-    input = ['평균가격(원)', 'Month']
+    data_dict = join_weather(data_dict, join=weather)
+
+    input = {}
+    for item in CASE:
+        input[item] = ['평균가격(원)']
+        if item in weather.keys():
+            input[item] = input[item] + [weather[item][2]]
+        if is_month:
+            input[item] = input[item] + ['Month']
+
     output = ['평균가격(원)']
     for item in CASE:
         for idx in range(len_data[item] - input_size - OUTPUT_SIZE):
-            x = data_dict[item].iloc[idx: idx + input_size][input]
+            x = data_dict[item].iloc[idx: idx + input_size][input[item]]
             y = data_dict[item].iloc[idx + input_size: idx + input_size + OUTPUT_SIZE][output]
 
             if process_method == 'ewm':
@@ -149,7 +164,7 @@ def data_loader_meta(
             elif process_method == 'log':
                 pass
 
-            x = x.to_numpy().flatten()
+            x = x.to_numpy()
             y = y.to_numpy().flatten()
 
             x_train[item].append(x)
@@ -175,5 +190,44 @@ def data_loader_meta(
 if __name__ == "__main__":
     x_train, x_val, y_train, y_val = data_loader_meta(process_method='ewma')
 
-    print(x_train['배추'].shape)
-    print(y_train['배추'].shape)
+    import numpy as np
+    import tensorflow as tf
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+    from tensorflow.keras.layers import LSTM, Dense
+
+    input_sequence_length = 9  # 평균가격과 강수량 각 9개
+    output_sequence_length = 3  # 예측할 미래의 평균가격 3개
+    num_features = 2  # 평균가격, 강수량 두 가지 입력 피처
+
+    model = Sequential([
+        LSTM(64, activation='relu', input_shape=(input_sequence_length, num_features)),
+        Dense(32, activation='relu'),
+        Dense(output_sequence_length)
+    ])
+
+    cb_early_stopping = EarlyStopping(
+        monitor='loss',
+        mode='min',
+        patience=10,
+    )
+
+    rlr = ReduceLROnPlateau(
+        monitor='val_loss',
+        factor=0.5,
+        patience=5,
+        min_lr=1e-10,
+        verbose=1,
+        min_delta=1e-5
+    )
+
+    model.compile(optimizer='adam', loss='mse')
+
+    model.fit(
+        x_train['배추'],
+        y_train['배추'],
+        epochs=5000,
+        batch_size=64,
+        validation_data=(x_val['배추'], y_val['배추']),
+        callbacks=[cb_early_stopping, rlr],
+    )

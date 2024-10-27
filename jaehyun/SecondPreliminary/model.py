@@ -34,39 +34,46 @@ class LastLassoRegressor(BaseEstimator, RegressorMixin):
     def fit(self, X, y):
 
         self.first.fit(X, y)
+
         residuals = y - self.first.predict(X)
-        self.second.fit(X, residuals)
+        X_residual = X[:, 1:] - X[:, :-1]
+        self.second.fit(X_residual, residuals)
 
         return self
 
     def predict(self, X):
 
         first_preds = self.first.predict(X)
-        second_preds = self.second.predict(X)
+
+        X_residual = X[:, 1:] - X[:, :-1]
+        second_preds = self.second.predict(X_residual)
+
         return first_preds + second_preds
 
 
 class ThreeLassoRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self):
 
+    def __init__(self):
         self.model = LastLassoRegressor()
 
     def fit(self, X, y):
-
         self.model.fit(X, y[:, 0])
         return self
 
     def predict(self, X):
 
-        preds = self.model.predict(X)
+        X_1 = X
+        preds_1 = self.model.predict(X_1)
 
-        print(X.shape)
-        print(preds.shape)
+        X_2 = np.concatenate((X, preds_1.reshape(-1, 1)), axis=1)[:, 1:]
+        preds_2 = self.model.predict(X_2)
 
-        new_X = np.vstack((X, [preds]))
-        raise ValueError("test")
+        X_3 = np.concatenate((X, preds_1.reshape(-1, 1)), axis=1)[:, 1:]
+        preds_3 = self.model.predict(X_3)
 
-        return (1 - self.mean_percentage)*common_preds + self.mean_percentage*mean_preds
+        preds = np.array([preds_1, preds_2, preds_3]).T
+
+        return preds
 
 
 
